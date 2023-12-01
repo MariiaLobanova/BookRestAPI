@@ -6,16 +6,26 @@ public class Book {
     private String author;
     private double price;
     private int quantity;
+    private int authorId;
 
-    public Book(int id, String title, String author, double price, int quantity) {
+    public Book(int id, String title, String author, double price, int quantity, int authorId) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.price = price;
         this.quantity = quantity;
+        this.authorId = authorId;
     }
 
     public Book(){}
+
+    public int getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
+    }
 
     public double getPrice() {
         return price;

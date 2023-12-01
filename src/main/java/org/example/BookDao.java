@@ -10,12 +10,13 @@ public class BookDao {
     public void createBook( Book book) {
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement
-                     ("INSERT INTO books (title, author, price, quantity) VALUES (?, ?, ?, ?);")) {
+                     ("INSERT INTO books (title, author, price, quantity,authorId) VALUES (?, ?, ?, ?,?);")) {
 
             ps.setString(1, book.getTitle());
             ps.setString(2, book.getAuthor());
             ps.setDouble(3, book.getPrice());
             ps.setInt(4, book.getQuantity());
+            ps.setInt(5, book.getAuthorId());
 
             ps.executeUpdate();
 
@@ -55,7 +56,8 @@ public class BookDao {
                         rs.getString("title"),
                         rs.getString("author"),
                         rs.getDouble("price"),
-                        rs.getInt("quantity"));
+                        rs.getInt("quantity"),
+                        rs.getInt("authorId"));
 
                 booksList.add(book);
             }
@@ -74,7 +76,8 @@ public class BookDao {
                         rs.getString("title"),
                         rs.getString("author"),
                         rs.getDouble("price"),
-                        rs.getInt("quantity"));
+                        rs.getInt("quantity"),
+                        rs.getInt("authorId"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
