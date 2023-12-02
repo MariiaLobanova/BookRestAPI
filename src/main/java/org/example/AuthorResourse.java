@@ -65,5 +65,11 @@ public class AuthorResourse {
                     .build();
         }
     }
+    @GET
+    @Path("/country")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AuthorBook> getAutorsCountry() {
+        return authorDao.getAuthorsCountry();
+    }
 
 }

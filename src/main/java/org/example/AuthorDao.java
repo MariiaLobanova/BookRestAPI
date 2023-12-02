@@ -8,10 +8,11 @@ public class AuthorDao {
     public void addAuthor( Author author) {
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement ps = connection.prepareStatement
-                     ("INSERT INTO authors (id,name) VALUES (?, ?);")) {
+                     ("INSERT INTO authors (id,name,country) VALUES (?, ?,?);")) {
 
             ps.setInt(1, author.getId());
             ps.setString(2, author.getName());
+            ps.setString(3, author.getCountry());
 
             ps.executeUpdate();
 
@@ -35,10 +36,11 @@ public class AuthorDao {
     }
     public void updateAuthor(Author author) {
         try (Connection connection = DBConnection.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("UPDATE authors SET name = ? WHERE id = ?;");
+            PreparedStatement ps = connection.prepareStatement("UPDATE authors SET name = ?,country =? WHERE id = ?;");
 
             ps.setString(1, author.getName());
-            ps.setInt(2, author.getId());
+            ps.setString(2, author.getCountry());
+            ps.setInt(3, author.getId());
 
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -52,7 +54,8 @@ public class AuthorDao {
             ResultSet rs = stmt.executeQuery("SELECT * FROM authors");
             while (rs.next()) {
                 Author author = new Author(rs.getInt("id"),
-                        rs.getString("name"));
+                        rs.getString("name"),
+                        rs.getString("country"));
                 authorsList.add(author);
             }
         } catch (SQLException e) {
@@ -67,12 +70,30 @@ public class AuthorDao {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Author(rs.getInt("id"),
-                        rs.getString("name"));
+                        rs.getString("name"),
+                        rs.getString("country"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
-
+    public List<AuthorBook> getAuthorsCountry(){
+        List<AuthorBook> countryList = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection()) {
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT authors.country, authors.name, books.title " +
+                    "FROM authors RIGHT JOIN books ON books.authorId = authors.id");
+            while (rs.next()) {
+                Author author = new Author(rs.getString("country"),
+                        rs.getString("name"));
+                Book book = new Book(rs.getString("title"));
+                AuthorBook authorBook = new AuthorBook(author, book);
+                countryList.add(authorBook);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return countryList;
+    }
 }
